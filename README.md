@@ -1,2 +1,2 @@
-# csv-comparison-tool
-Command-line application to compare two CSV files and export the conflicting fields.
+# CSV Comparison Tool
+Command-line application to compare two datasets present in a CSV files, exporting the conflicting fields.
