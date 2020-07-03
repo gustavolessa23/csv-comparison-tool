@@ -22,12 +22,12 @@ Must be 2 parameters, separated by a comma and wrapped in quotes.
 --options="FC,CV" 
 ```
 #### Columns to determine if entries are comparable
-One or more parameter
+One or more parameters that form the composite key.
 ```
 --same="AccountNumber,Column1" 
 ```
 #### Columns to be analysed when comparing entries
-One ore more column names, separated by a comma and wrapped in quotes.
+One or more column names, separated by a comma and wrapped in quotes.
 ```
 --compare="Column2,Column4,Column5"
 ```
