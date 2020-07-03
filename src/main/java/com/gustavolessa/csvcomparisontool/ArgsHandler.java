@@ -20,7 +20,7 @@ public class ArgsHandler {
     private String systemColumnId;
     private List<String> datasetOptions;
     private List<String> columnsToCompare;
-    private String sameColumn;
+    private List<String> sameColumns;
     private List<String> outputFileType;
     private String dest;
     private String src;
@@ -49,9 +49,11 @@ public class ArgsHandler {
                 .orElseThrow(() -> new IllegalArgumentException("--system parameter is required to identify which column" +
                         "contains the information that will be used to split datasets."));
 
-        sameColumn = Optional.of(args.getOptionValues("same").get(0))
-                .orElseThrow(() -> new IllegalArgumentException("--same parameter is required to define which column " +
-                        "identifies the account number."));
+        sameColumns = List.of(Optional.of(args.getOptionValues("same").get(0))
+                .orElseThrow(() ->
+                        new IllegalArgumentException("--same parameter is required to define which column " +
+                                "identifies the account number."))
+                .split(",", -1));
 
         outputFileType = Optional.of(args.getNonOptionArgs())
                 .orElse(List.of("csv"));
@@ -95,8 +97,8 @@ public class ArgsHandler {
         return columnsToCompare;
     }
 
-    public String getSameColumn() {
-        return sameColumn;
+    public List<String> getSameColumns() {
+        return sameColumns;
     }
 
     public List<String> getOutputFileType() {

@@ -10,6 +10,7 @@ import java.util.List;
 public class Report {
 
     private final List<CSVEntry> diff;
+    private static long lastCorrelationId = 0;
 
     private final List<String[]> toWrite;
 
@@ -27,6 +28,9 @@ public class Report {
         /*
         for each entry of dataset1, check if there an entry in dataset2 with the same account number
          */
+
+        List<String> sameColumns = data.getSameColumns();
+
         //For each entry in dataset1
         for (CSVEntry c : data.getDataset1()) {
             // for each entry in dataset2
@@ -34,13 +38,33 @@ public class Report {
 
                 //    boolean added = false;
                 //if account number of entry c = account number of entry s
-                if (c.getData().get(data.getSameColumn())
-                        .equalsIgnoreCase(s.getData().get(data.getSameColumn()))) {
 
-                    for (int x = 0; x < data.getColumnsToCompare().size(); x++) {
-                        if (!c.getData().get(data.getColumnsToCompare().get(x))
+                boolean isTheSame = false;
+//                List<String> sameColumns = data.getSameColumns();
+                // sameColumns.forEach(System.out::println);
+
+                for (String column : sameColumns) {
+                    if (c.getData().get(column)
+                            .equalsIgnoreCase(s.getData().get(column))) {
+                        isTheSame = true;
+                    } else {
+                        isTheSame = false;
+                        break;
+                    }
+                }
+
+                if (isTheSame) {
+
+                    List<String> columnsToCompare = data.getColumnsToCompare();
+                    for (int x = 0; x < columnsToCompare.size(); x++) {
+                        String column = columnsToCompare.get(x);
+                        if (c.getData().get(column)
                                 .equalsIgnoreCase(s.getData()
-                                        .get(data.getColumnsToCompare().get(x)))) {
+                                        .get(column))) {
+
+                            lastCorrelationId++;
+                            c.add("Correlation ID", String.valueOf(lastCorrelationId));
+                            s.add("Correlation ID", String.valueOf(lastCorrelationId));
 
                             diff.add(c);
                             diff.add(s);
@@ -74,7 +98,9 @@ public class Report {
     }
 
     public void write() {
-        toWrite.add(data.getColumns().toArray(String[]::new));
+        List<String> columns = data.getColumns();
+        columns.add(0, "Correlation ID");
+        toWrite.add(columns.toArray(String[]::new));
         for (int x = 0; x < diff.size(); x++) {
             List<String> temp = new ArrayList<>();
             for (int y = 0; y < data.getColumns().size(); y++) {

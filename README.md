@@ -21,14 +21,15 @@ Must be 2 parameters, separated by a comma and wrapped in quotes.
 ```
 --options="FC,CV" 
 ```
-#### Column to determine if entries are comparable
+#### Columns to determine if entries are comparable
+One or more parameter
 ```
---same="AccountNumber" 
+--same="AccountNumber,Column1" 
 ```
 #### Columns to be analysed when comparing entries
 One ore more column names, separated by a comma and wrapped in quotes.
 ```
---compare="Column1,Column4,Column5"
+--compare="Column2,Column4,Column5"
 ```
 #### Output file type
 File type with no dash (`--`).

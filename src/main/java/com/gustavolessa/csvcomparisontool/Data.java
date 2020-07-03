@@ -19,7 +19,7 @@ public class Data {
     int systemColumnIndex;
     private String systemA;
     private String systemB;
-    private String sameColumn;
+    private List<String> sameColumns;
     private List<String> columnsToCompare;
     private String outputDest;
 
@@ -32,7 +32,7 @@ public class Data {
         this.columns = new ArrayList<>();
         this.dataset1 = new ArrayList<>();
         this.dataset2 = new ArrayList<>();
-        this.sameColumn = "";
+        this.sameColumns = new ArrayList<>();
         this.systemA = "";
         this.systemB = "";
         this.systemColumnIndex = -1;
@@ -61,7 +61,8 @@ public class Data {
         // System.out.println("system a: "+systemA);
         systemB = argsHandler.getDatasetOptions().get(1);
         // System.out.println("system b: "+systemB);
-        sameColumn = argsHandler.getSameColumn();
+        sameColumns = argsHandler.getSameColumns();
+        // sameColumns.forEach(System.out::println);
 
         columnsToCompare = argsHandler.getColumnsToCompare();
 
@@ -104,16 +105,16 @@ public class Data {
         return dataset2;
     }
 
-    public String getSameColumn() {
-        return sameColumn;
+    public List<String> getSameColumns() {
+        return sameColumns;
     }
 
     public String getOutputDest() {
         return outputDest;
     }
 
-    public void setSameColumn(String sameColumn) {
-        this.sameColumn = sameColumn;
+    public void setSameColumns(List<String> sameColumns) {
+        this.sameColumns = sameColumns;
     }
 
     public List<String> getColumnsToCompare() {
