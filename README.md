@@ -31,7 +31,7 @@ One ore more column names, separated by a comma and wrapped in quotes.
 --compare="Column1,Column4,Column5"
 ```
 #### Output file type
-File type with no dashes (`--`).
+File type with no dash (`--`).
 Currently, only `csv` is available.
 ```
 csv
