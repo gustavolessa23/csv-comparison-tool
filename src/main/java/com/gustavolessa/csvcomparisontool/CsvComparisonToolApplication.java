@@ -49,6 +49,7 @@ public class CsvComparisonToolApplication implements ApplicationRunner {
 		}
 
 		report.generate();
+		report.write();
 //		try{
 //			fileReader.setSrc(argsHandler.getSrc());
 //			fileReader.init();

@@ -2,7 +2,9 @@ package com.gustavolessa.csvcomparisontool;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,28 +14,30 @@ public class Data {
     private final List<String> columns;
     private final List<CSVEntry> dataset1;
     private final List<CSVEntry> dataset2;
-    private final List<String> rateColumns;
+
     // parameters defined by run arguments
     int systemColumnIndex;
-    @Autowired
-    private FileReader fileReader;
-    @Autowired
-    private ArgsHandler argsHandler;
     private String systemA;
     private String systemB;
     private String sameColumn;
     private List<String> columnsToCompare;
+    private String outputDest;
+
+    @Autowired
+    private FileReader fileReader;
+    @Autowired
+    private ArgsHandler argsHandler;
 
     public Data() {
         this.columns = new ArrayList<>();
         this.dataset1 = new ArrayList<>();
         this.dataset2 = new ArrayList<>();
-        this.rateColumns = new ArrayList<>();
         this.sameColumn = "";
         this.systemA = "";
         this.systemB = "";
         this.systemColumnIndex = -1;
         this.columnsToCompare = new ArrayList<>();
+        this.outputDest = "";
     }
 
     public void readFile() throws FileNotFoundException {
@@ -44,10 +48,6 @@ public class Data {
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("CSV file not found.");
         }
-    }
-
-    public void addRateColumns(String rateColumn) {
-        this.rateColumns.add(rateColumn);
     }
 
     public void addColumn(String col) {
@@ -65,6 +65,7 @@ public class Data {
 
         columnsToCompare = argsHandler.getColumnsToCompare();
 
+        outputDest = argsHandler.getDest() + File.separatorChar + Instant.now().getEpochSecond() + ".csv";
     }
 
     public void addLine(String[] line) {
@@ -107,6 +108,10 @@ public class Data {
         return sameColumn;
     }
 
+    public String getOutputDest() {
+        return outputDest;
+    }
+
     public void setSameColumn(String sameColumn) {
         this.sameColumn = sameColumn;
     }
@@ -138,5 +143,22 @@ public class Data {
             }
             System.out.println();
         }
+    }
+
+    public String datasetToString(List<CSVEntry> dataset) {
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < dataset.size(); x++) {
+            for (int y = 0; y < columns.size(); y++) {
+                sb.append(dataset
+                        .get(x)
+                        .getData()
+                        .get(columns
+                                .get(y)));
+
+                if (y != columns.size() - 1) sb.append(",");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

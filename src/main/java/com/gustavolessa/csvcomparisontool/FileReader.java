@@ -55,7 +55,7 @@ public class FileReader {
                 data.addLine(record);
             }
             System.out.println();
-            data.printDatasets();
+           // data.printDatasets();
 //            for(int x = 0; x < data.getDataset1().size(); x++){
 //                for(int y = 0; y < data.getColumns().size(); y++){
 //                    System.out.print(data

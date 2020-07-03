@@ -2,17 +2,25 @@ package com.gustavolessa.csvcomparisontool;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
 
     private final List<CSVEntry> diff;
+
+    private final List<String[]> toWrite;
+
+    private Path output;
+
     @Autowired
     private Data data;
 
     public Report() {
         diff = new ArrayList<>();
+        toWrite = new ArrayList<>();
     }
 
     public void generate() {
@@ -47,6 +55,7 @@ public class Report {
             }
         }
 
+
         System.out.println("------ REPORT -------");
 
         data.getColumns().forEach(e -> System.out.print(e + "\t"));
@@ -61,6 +70,27 @@ public class Report {
                                 .get(y)) + "\t\t");
             }
             System.out.println();
+        }
+    }
+
+    public void write() {
+        toWrite.add(data.getColumns().toArray(String[]::new));
+        for (int x = 0; x < diff.size(); x++) {
+            List<String> temp = new ArrayList<>();
+            for (int y = 0; y < data.getColumns().size(); y++) {
+                temp.add(diff
+                        .get(x)
+                        .getData()
+                        .get(data
+                                .getColumns()
+                                .get(y)));
+            }
+            toWrite.add(temp.toArray(String[]::new));
+        }
+        try {
+            ReportWriter.writeReport(toWrite, Paths.get(data.getOutputDest()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
