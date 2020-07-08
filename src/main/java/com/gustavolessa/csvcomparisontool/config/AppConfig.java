@@ -1,5 +1,10 @@
-package com.gustavolessa.csvcomparisontool;
+package com.gustavolessa.csvcomparisontool.config;
 
+import com.gustavolessa.csvcomparisontool.data.Data;
+import com.gustavolessa.csvcomparisontool.entities.Report;
+import com.gustavolessa.csvcomparisontool.services.AppRunner;
+import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
+import com.gustavolessa.csvcomparisontool.services.FileReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +16,11 @@ public class AppConfig {
 //    public ArgsHandler argsValidator(ApplicationArguments args) {
 //        return new ArgsHandler(args);
 //    }
+
+    @Bean
+    public AppRunner appRunner() {
+        return new AppRunner();
+    }
 
     @Bean
     public ArgsHandler argsValidator() {

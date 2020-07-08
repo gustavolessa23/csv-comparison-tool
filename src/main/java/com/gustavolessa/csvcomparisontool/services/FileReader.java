@@ -1,5 +1,6 @@
-package com.gustavolessa.csvcomparisontool;
+package com.gustavolessa.csvcomparisontool.services;
 
+import com.gustavolessa.csvcomparisontool.data.Data;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;

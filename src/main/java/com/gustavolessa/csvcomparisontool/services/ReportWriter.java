@@ -1,4 +1,4 @@
-package com.gustavolessa.csvcomparisontool;
+package com.gustavolessa.csvcomparisontool.services;
 
 import com.opencsv.CSVWriter;
 

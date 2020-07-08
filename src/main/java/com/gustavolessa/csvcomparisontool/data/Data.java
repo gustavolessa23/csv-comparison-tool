@@ -1,5 +1,8 @@
-package com.gustavolessa.csvcomparisontool;
+package com.gustavolessa.csvcomparisontool.data;
 
+import com.gustavolessa.csvcomparisontool.entities.CSVEntry;
+import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
+import com.gustavolessa.csvcomparisontool.services.FileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -10,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Data {
+
     // data from file
     private final List<String> columns;
     private final List<CSVEntry> dataset1;
@@ -19,7 +23,7 @@ public class Data {
     int systemColumnIndex;
     private String systemA;
     private String systemB;
-    private List<String> sameColumns;
+    private List<List<String>> keyColumns;
     private List<String> columnsToCompare;
     private String outputDest;
 
@@ -32,7 +36,7 @@ public class Data {
         this.columns = new ArrayList<>();
         this.dataset1 = new ArrayList<>();
         this.dataset2 = new ArrayList<>();
-        this.sameColumns = new ArrayList<>();
+        this.keyColumns = new ArrayList<List<String>>();
         this.systemA = "";
         this.systemB = "";
         this.systemColumnIndex = -1;
@@ -61,7 +65,7 @@ public class Data {
         // System.out.println("system a: "+systemA);
         systemB = argsHandler.getDatasetOptions().get(1);
         // System.out.println("system b: "+systemB);
-        sameColumns = argsHandler.getSameColumns();
+        keyColumns = argsHandler.getKeyColumns();
         // sameColumns.forEach(System.out::println);
 
         columnsToCompare = argsHandler.getColumnsToCompare();
@@ -70,6 +74,7 @@ public class Data {
     }
 
     public void addLine(String[] line) {
+
         if (line[systemColumnIndex].equalsIgnoreCase(systemA)) {
             addLineToDataset(dataset1, line);
         } else if (line[systemColumnIndex].equalsIgnoreCase(systemB)) {
@@ -105,16 +110,16 @@ public class Data {
         return dataset2;
     }
 
-    public List<String> getSameColumns() {
-        return sameColumns;
+    public List<List<String>> getKeyColumns() {
+        return keyColumns;
     }
 
     public String getOutputDest() {
         return outputDest;
     }
 
-    public void setSameColumns(List<String> sameColumns) {
-        this.sameColumns = sameColumns;
+    public void setKeyColumns(List<List<String>> keyColumns) {
+        this.keyColumns = keyColumns;
     }
 
     public List<String> getColumnsToCompare() {

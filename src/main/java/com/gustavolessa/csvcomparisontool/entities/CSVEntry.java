@@ -1,4 +1,4 @@
-package com.gustavolessa.csvcomparisontool;
+package com.gustavolessa.csvcomparisontool.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class CSVEntry {
 
-    private final Map<String, String> data;
+    protected Map<String, String> data;
 
     public CSVEntry() {
         this.data = new HashMap<>();
@@ -16,6 +16,7 @@ public class CSVEntry {
     public void add(String column, String value) {
         this.data.put(column, value);
     }
+
 
     public Map<String, String> getData() {
         return this.data;
