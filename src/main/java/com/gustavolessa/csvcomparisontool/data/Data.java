@@ -11,13 +11,14 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Data {
 
     // data from file
     private final List<String> columns;
-    private final List<CSVEntry> dataset1;
-    private final List<CSVEntry> dataset2;
+    private List<CSVEntry> dataset1;
+    private List<CSVEntry> dataset2;
 
     // parameters defined by run arguments
     int systemColumnIndex;
@@ -51,6 +52,8 @@ public class Data {
             fileReader.read();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("CSV file not found.");
+        } finally {
+            fileReader.close();
         }
     }
 
@@ -80,6 +83,11 @@ public class Data {
         } else if (line[systemColumnIndex].equalsIgnoreCase(systemB)) {
             addLineToDataset(dataset2, line);
         }
+    }
+
+    public void removeDuplicatesFromDatasets() {
+        dataset1 = dataset1.stream().distinct().collect(Collectors.toList());
+        dataset2 = dataset2.stream().distinct().collect(Collectors.toList());
     }
 
     private void addLineToDataset(List<CSVEntry> dataset, String[] line) {

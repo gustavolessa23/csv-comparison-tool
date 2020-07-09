@@ -1,6 +1,9 @@
 # CSV Comparison Tool
 Command-line application to compare two datasets present in a CSV files, exporting the conflicting fields.
 
+## Requirements
+- Java 8;
+- Maven (tested on version 3.6.3);
 
 ## Parameters
 #### Source file (REQUIRED)

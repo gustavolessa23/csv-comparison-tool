@@ -1,9 +1,6 @@
 package com.gustavolessa.csvcomparisontool.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CSVEntry {
 
@@ -35,4 +32,26 @@ public class CSVEntry {
         }
         return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+
+        for (String s : this.getData().keySet()) {
+            if (!((CSVEntry) obj).getData().get(s).equalsIgnoreCase(this.getData().get(s)))
+                return false;
+
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(this.getValues().toArray());
+    }
+
 }

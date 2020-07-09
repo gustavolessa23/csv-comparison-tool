@@ -1,8 +1,6 @@
 package com.gustavolessa.csvcomparisontool.entities;
 
-import com.gustavolessa.csvcomparisontool.data.Data;
 import com.gustavolessa.csvcomparisontool.services.ReportWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,9 +20,6 @@ public class Report {
 
 
     private Path output;
-
-    @Autowired
-    private Data data;
 
     public Report() {
         diff = new ArrayList<>();
@@ -126,7 +121,7 @@ public class Report {
         // keyColumns.forEach(System.out::println);
 
         for (int col = 0; col < keys.size(); col++) {
-            
+
             if (set1.getData().get(keys.get(col))
                     .equalsIgnoreCase(set2.getData().get(keys.get(col)))) {
 //                System.out.println(set1.getData().get(keys.get(col)));
