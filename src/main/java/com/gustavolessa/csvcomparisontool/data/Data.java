@@ -93,7 +93,7 @@ public class Data {
     private void addLineToDataset(List<CSVEntry> dataset, String[] line) {
         CSVEntry entry = new CSVEntry();
         for (int x = 0; x < line.length; x++) {
-            entry.add(columns.get(x), line[x]);
+            entry.add(columns.get(x), line[x].trim());
 //            System.out.println("column = "+columns.get(x));
 //            System.out.println("field = "+line[x]);
 

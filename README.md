@@ -26,6 +26,7 @@ Must be 2 parameters, separated by a comma and wrapped in quotes.
 ```
 #### Columns to determine if entries are comparable
 One or more parameters that form the composite key.
+More than one run is allowed at the same time,
 ```
 --same="AccountNumber,Column1" 
 ```

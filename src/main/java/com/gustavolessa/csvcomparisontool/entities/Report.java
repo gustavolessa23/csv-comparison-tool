@@ -138,11 +138,12 @@ public class Report {
     public void write(List<String> columns, String path) {
 
         // List<String> columns = data.getColumns();
-        columns.add(0, "Correlation ID");
-
+        if (!columns.get(0).equalsIgnoreCase("Correlation ID")) {
+            columns.add(0, "Correlation ID");
+        }
         for (List<CSVReportEntry> run :
                 diff) {
-            toWrite.add(columns.toArray(String[]::new));
+            toWrite.add(columns.stream().toArray(String[]::new));
 
             for (int x = 0; x < run.size(); x++) {
                 List<String> temp = new ArrayList<>();
@@ -154,7 +155,7 @@ public class Report {
                             .get(columns
                                     .get(y)));
                 }
-                toWrite.add(temp.toArray(String[]::new));
+                toWrite.add(temp.stream().toArray(String[]::new));
             }
         }
 
@@ -163,5 +164,43 @@ public class Report {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void writeExcel(List<String> columns) {
+        // List<String> columns = data.getColumns();
+        if (!columns.get(0).equalsIgnoreCase("Correlation ID")) {
+            columns.add(0, "Correlation ID");
+        }
+
+        List<List<List<String>>> content = new ArrayList<>();
+
+        for (int i = 0; i < diff.size(); i++) {
+            List<CSVReportEntry> run = diff.get(i);
+            List<List<String>> runContent = new ArrayList<>();
+
+
+            for (int x = 0; x < run.size(); x++) {
+                List<String> temp = new ArrayList<>();
+                temp.add(String.valueOf(run.get(x).getId()));
+                for (int y = 1; y < columns.size(); y++) {
+                    temp.add(run
+                            .get(x)
+                            .getData()
+                            .get(columns
+                                    .get(y)));
+                }
+                runContent.add(temp);
+            }
+            content.add(runContent);
+        }
+
+        ReportWriter.writeToExcel2(columns, diff);
+
+        //ReportWriter.writeToExcel(columns, content);
+//        try {
+//            ReportWriter.writeReport(toWrite, Paths.get(path));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

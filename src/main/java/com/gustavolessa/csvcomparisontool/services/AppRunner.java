@@ -51,5 +51,6 @@ public class AppRunner {
 
         // write report
         report.write(data.getColumns(), data.getOutputDest());
+        report.writeExcel(data.getColumns());
     }
 }
