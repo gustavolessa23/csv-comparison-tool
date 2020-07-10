@@ -1,0 +1,9 @@
+Platform, AccountNumber, Dim1, Dim2, Dim3,Rate
+FC,25552, v, n, d,100
+CV,25552, v, n, d,105
+CV,25552, v, n, d,105
+CV,25552, v, n, d,107
+FC,25553, v, a, d,50
+CV,25553, v, n, d,50
+FC,25554, v, x, d,50
+CV,25554,b, n, d,50

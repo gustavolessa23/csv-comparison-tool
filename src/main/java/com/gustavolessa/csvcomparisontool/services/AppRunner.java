@@ -52,5 +52,6 @@ public class AppRunner {
         // write report
         report.write(data.getColumns(), data.getOutputDest());
         report.writeExcel(data.getColumns());
+        // --src="C:\Users\Gustavo Lessa\OneDrive - Neueda\CSV Tool\sampledata.csv" --dest="C:\Users\Gustavo Lessa\OneDrive - Neueda\CSV Tool\output" --system="Platform" --options="FC,CV"  --key="AccountNumber" --key="AccountNumber,Dim1" --compare="Dim2,Dim3,Rate" csv
     }
 }
