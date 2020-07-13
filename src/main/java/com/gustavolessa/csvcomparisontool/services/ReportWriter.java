@@ -10,6 +10,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ReportWriter {
@@ -280,7 +282,7 @@ public class ReportWriter {
 
         File currDir = new File(".");
         String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + "tempaqui.xlsx";
+        String fileLocation = path.substring(0, path.length() - 1) + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
         System.out.println("Saved at: " + fileLocation);
 
         try {
