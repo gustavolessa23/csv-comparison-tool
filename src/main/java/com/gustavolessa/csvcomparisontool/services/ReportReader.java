@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileReader {
+public class ReportReader {
 
     @Autowired
     private Data data;
@@ -21,7 +21,7 @@ public class FileReader {
     private String[] record;
     private Path src;
 
-    public FileReader() {
+    public ReportReader() {
 
     }
 

@@ -1,9 +1,5 @@
 package com.gustavolessa.csvcomparisontool.entities;
 
-import com.gustavolessa.csvcomparisontool.services.ReportWriter;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,37 +7,33 @@ public class Report {
 
     private final List<List<CSVReportEntry>> diff;
     private long lastCorrelationId;
+    private final List<String> allColumns;
+    private final List<List<String>> keyColumnsList;
+    private final List<String> columnsToCompare;
+    private final List<CSVEntry> dataset1;
+    private final List<CSVEntry> dataset2;
 
-    private final List<String[]> toWrite;
-    private List<List<String>> keyColumnsList;
-    private List<String> columnsToCompare;
-    private List<CSVEntry> dataset1;
-    private List<CSVEntry> dataset2;
+    private Report(List<CSVEntry> dataset1,
+                   List<CSVEntry> dataset2,
+                   List<List<String>> keyColumnsList,
+                   List<String> columnsToCompare,
+                   List<String> allColumns) {
 
-
-    private Path output;
-
-    public Report() {
         diff = new ArrayList<>();
-        toWrite = new ArrayList<>();
-        keyColumnsList = null;
-        columnsToCompare = null;
-        dataset1 = null;
-        dataset2 = null;
-        lastCorrelationId = 0;
-    }
-
-    public void generate(List<CSVEntry> dataset1, List<CSVEntry> dataset2, List<List<String>> keyColumnsList, List<String> columnsToCompare) {
-        /*
-        for each entry of dataset1, check if there an entry in dataset2 with the same account number
-         */
         this.keyColumnsList = keyColumnsList;
         this.dataset1 = dataset1;
         this.dataset2 = dataset2;
         this.columnsToCompare = columnsToCompare;
+        this.allColumns = allColumns;
+        lastCorrelationId = 0;
 
-        // List<String> test = keyColumnsList.get(0);
+        generateReport();
+    }
 
+    private void generateReport() {
+        /*
+        for each entry of dataset1, check if there an entry in dataset2 with the same account number
+         */
         for (int run = 0; run < keyColumnsList.size(); run++) {
 
             //  List<CSVReportEntry> tempRun = new ArrayList<>();
@@ -90,7 +82,7 @@ public class Report {
             lastCorrelationId = 0;
         }
 
-
+        formatForExcel();
 //        System.out.println("------ REPORT -------");
 //
 //        data.getColumns().forEach(e -> System.out.print(e + "\t"));
@@ -135,41 +127,10 @@ public class Report {
         return entriesHaveTheSameKeys;
     }
 
-    public void write(List<String> columns, String path) {
+    public void formatForExcel() {
 
-        // List<String> columns = data.getColumns();
-        if (!columns.get(0).equalsIgnoreCase("Correlation ID")) {
-            columns.add(0, "Correlation ID");
-        }
-        for (List<CSVReportEntry> run :
-                diff) {
-            toWrite.add(columns.stream().toArray(String[]::new));
-
-            for (int x = 0; x < run.size(); x++) {
-                List<String> temp = new ArrayList<>();
-                temp.add(String.valueOf(run.get(x).getId()));
-                for (int y = 1; y < columns.size(); y++) {
-                    temp.add(run
-                            .get(x)
-                            .getData()
-                            .get(columns
-                                    .get(y)));
-                }
-                toWrite.add(temp.stream().toArray(String[]::new));
-            }
-        }
-
-        try {
-            ReportWriter.writeReport(toWrite, Paths.get(path));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeExcel(List<String> columns) {
-        // List<String> columns = data.getColumns();
-        if (!columns.get(0).equalsIgnoreCase("Correlation ID")) {
-            columns.add(0, "Correlation ID");
+        if (!allColumns.get(0).equalsIgnoreCase("Correlation ID")) {
+            allColumns.add(0, "Correlation ID");
         }
 
         List<List<List<String>>> content = new ArrayList<>();
@@ -182,25 +143,77 @@ public class Report {
             for (int x = 0; x < run.size(); x++) {
                 List<String> temp = new ArrayList<>();
                 temp.add(String.valueOf(run.get(x).getId()));
-                for (int y = 1; y < columns.size(); y++) {
+                for (int y = 1; y < allColumns.size(); y++) {
                     temp.add(run
                             .get(x)
                             .getData()
-                            .get(columns
+                            .get(allColumns
                                     .get(y)));
                 }
                 runContent.add(temp);
             }
             content.add(runContent);
         }
+    }
 
-        ReportWriter.writeToExcel2(columns, diff);
+    public List<List<CSVReportEntry>> getDiff() {
+        return diff;
+    }
 
-        //ReportWriter.writeToExcel(columns, content);
-//        try {
-//            ReportWriter.writeReport(toWrite, Paths.get(path));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    public List<String> getAllColumns() {
+        return allColumns;
+    }
+
+    public List<List<String>> getKeyColumnsList() {
+        return keyColumnsList;
+    }
+
+    public List<String> getColumnsToCompare() {
+        return columnsToCompare;
+    }
+
+    public static final class ReportBuilder {
+        private List<List<String>> keyColumnsList;
+        private List<String> columnsToCompare;
+        private List<CSVEntry> dataset1;
+        private List<CSVEntry> dataset2;
+        private List<String> allColumns;
+
+        private ReportBuilder() {
+        }
+
+        public static ReportBuilder aReport() {
+            return new ReportBuilder();
+        }
+
+        public ReportBuilder withAllColumns(List<String> allColumns) {
+            this.allColumns = allColumns;
+            return this;
+        }
+
+        public ReportBuilder withKeyColumnsList(List<List<String>> keyColumnsList) {
+            this.keyColumnsList = keyColumnsList;
+            return this;
+        }
+
+        public ReportBuilder withColumnsToCompare(List<String> columnsToCompare) {
+            this.columnsToCompare = columnsToCompare;
+            return this;
+        }
+
+        public ReportBuilder withDataset1(List<CSVEntry> dataset1) {
+            this.dataset1 = dataset1;
+            return this;
+        }
+
+        public ReportBuilder withDataset2(List<CSVEntry> dataset2) {
+            this.dataset2 = dataset2;
+            return this;
+        }
+
+        public Report build() {
+            Report report = new Report(dataset1, dataset2, keyColumnsList, columnsToCompare, allColumns);
+            return report;
+        }
     }
 }

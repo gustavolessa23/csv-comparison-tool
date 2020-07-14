@@ -2,12 +2,10 @@ package com.gustavolessa.csvcomparisontool.data;
 
 import com.gustavolessa.csvcomparisontool.entities.CSVEntry;
 import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
-import com.gustavolessa.csvcomparisontool.services.FileReader;
+import com.gustavolessa.csvcomparisontool.services.ReportReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +27,7 @@ public class Data {
     private String outputDest;
 
     @Autowired
-    private FileReader fileReader;
+    private ReportReader reportReader;
     @Autowired
     private ArgsHandler argsHandler;
 
@@ -37,7 +35,7 @@ public class Data {
         this.columns = new ArrayList<>();
         this.dataset1 = new ArrayList<>();
         this.dataset2 = new ArrayList<>();
-        this.keyColumns = new ArrayList<List<String>>();
+        this.keyColumns = new ArrayList<>();
         this.systemA = "";
         this.systemB = "";
         this.systemColumnIndex = -1;
@@ -47,13 +45,13 @@ public class Data {
 
     public void readFile() throws FileNotFoundException {
         try {
-            fileReader.setSrc(argsHandler.getSrc());
-            fileReader.init();
-            fileReader.read();
+            reportReader.setSrc(argsHandler.getSrc());
+            reportReader.init();
+            reportReader.read();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("CSV file not found.");
         } finally {
-            fileReader.close();
+            reportReader.close();
         }
     }
 
@@ -73,7 +71,7 @@ public class Data {
 
         columnsToCompare = argsHandler.getColumnsToCompare();
 
-        outputDest = argsHandler.getDest() + File.separatorChar + Instant.now().getEpochSecond() + ".csv";
+        outputDest = argsHandler.getDest();
     }
 
     public void addLine(String[] line) {

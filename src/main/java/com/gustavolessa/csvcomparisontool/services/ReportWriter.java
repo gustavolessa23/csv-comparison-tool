@@ -1,128 +1,78 @@
 package com.gustavolessa.csvcomparisontool.services;
 
 import com.gustavolessa.csvcomparisontool.entities.CSVReportEntry;
-import com.opencsv.CSVWriter;
+import com.gustavolessa.csvcomparisontool.entities.Report;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class ReportWriter {
 
-    public static void writeReport(List<String[]> report, Path path) throws Exception {
+//    public ReportWriter(){
+//
+//    }
 
-        try {
-            Files.createDirectories(path.getParent());
-            Files.createFile(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//    public static void writeReport(List<String[]> report, Path path) throws Exception {
+//
+//        try {
+//            Files.createDirectories(path.getParent());
+//            Files.createFile(path);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        CSVWriter writer = new CSVWriter(new FileWriter(path.toString()));
+//        writer.writeAll(report);
+//
+//        writer.close();
+//    }
 
-        CSVWriter writer = new CSVWriter(new FileWriter(path.toString()));
-        writer.writeAll(report);
+    public static void writeToExcel(Report report, String path) {
 
-        writer.close();
-    }
-
-    public static void writeToExcel(List<String> columns, List<List<List<String>>> content) {
-
-        Workbook workbook = new XSSFWorkbook();
-
-        Sheet sheet = workbook.createSheet("Report");
-
-        CellStyle headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREY_25_PERCENT.getIndex());
-        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
-        font.setFontName("Calibri");
-        font.setFontHeightInPoints((short) 11);
-        //font.setBold(true);
-        headerStyle.setFont(font);
-
-        CellStyle regularStyle = workbook.createCellStyle();
-        regularStyle.setWrapText(true);
-
-        CellStyle borderStyle = workbook.createCellStyle();
-        borderStyle.setWrapText(true);
-        borderStyle.setBorderBottom(BorderStyle.THIN);
-        borderStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
-
-        for (int i = 0; i < columns.size(); i++) {
-            sheet.setColumnWidth(i, 1500);
-        }
-
-        int rowCounter = 0;
-        for (List<List<String>> contentList : content) {
-
-            Row header = sheet.createRow(rowCounter++);
-
-            for (int x = 0; x < columns.size(); x++) {
-                Cell headerCell = header.createCell(x);
-                headerCell.setCellValue(columns.get(x));
-                headerCell.setCellStyle(headerStyle);
-            }
-
-            for (int j = 0; j < contentList.size(); j++) {
-                Row row = sheet.createRow(rowCounter++);
-
-                for (int y = 0; y < contentList.get(j).size(); y++) {
-                    Cell cell = row.createCell(y);
-                    cell.setCellValue(contentList.get(j).get(y));
-                    cell.setCellStyle(regularStyle);
-
-                    if (j == contentList.size() - 1) {
-                        cell.setCellStyle(borderStyle);
-                    } else if (j < contentList.size() - 1 &&
-                            y <= contentList.get(j).size() - 1) {
-                        if (!contentList.get(j + 1).get(0)
-                                .equalsIgnoreCase(contentList.get(j).get(0))) {
-                            cell.setCellStyle(borderStyle);
-                        }
-                    }
-                }
-
-            }
-            rowCounter++;
-
-        }
-
-        File currDir = new File(".");
-        String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + "tempaqui.xlsx";
-        System.out.println("Saved at: " + fileLocation);
-
-        try {
-            FileOutputStream outputStream = null;
-            outputStream = new FileOutputStream(fileLocation);
-            workbook.write(outputStream);
-            workbook.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void writeToExcel2(List<String> columns, List<List<CSVReportEntry>> diff) {
-
-
+        List<String> columns = report.getAllColumns();
+        List<List<CSVReportEntry>> diff = report.getDiff();
         Workbook workbook = new XSSFWorkbook();
 
         Sheet sheet = workbook.createSheet("Report");
         //   sheet.setDefaultColumnWidth(1500);
 
         // Header style
-        CellStyle headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREY_50_PERCENT.getIndex());
+
+        String rgbS = "B4C6E7";
+        byte[] rgbB = new byte[3]; // get byte array from hex string
+        try {
+            rgbB = Hex.decodeHex(rgbS);
+        } catch (DecoderException e) {
+            e.printStackTrace();
+        }
+        XSSFColor color = new XSSFColor(rgbB, null);
+
+        XSSFCellStyle headerStyle = ((XSSFWorkbook) workbook).createCellStyle();
+        //  IndexedColorMap colorMap = ((XSSFWorkbook) workbook).getStylesSource().getIndexedColors();
+        //byte[] byteColor = new byte[]{(byte) 217, (byte) 245, (byte) 222};
+        //  headerStyle.setFillBackgroundColor(byteColor, new DefaultIndexedColorMap());
+        headerStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_CORNFLOWER_BLUE.getIndex());
+        // XSSFColor test = new XSSFColor(byteColor, new DefaultIndexedColorMap());
+
+        //headerStyle.setFillBackgroundColor(color);
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerStyle.setBorderBottom(BorderStyle.THIN);
         headerStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
@@ -130,14 +80,14 @@ public class ReportWriter {
         // Font style
         XSSFFont font = ((XSSFWorkbook) workbook).createFont();
         font.setFontName("Calibri");
-        font.setFontHeightInPoints((short) 11);
-        //font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
         headerStyle.setFont(font);
 
         // Cell with no border
         CellStyle regularStyle = workbook.createCellStyle();
         regularStyle.setBorderBottom(BorderStyle.THIN);
         regularStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+        regularStyle.setFont(font);
 
         // Cell with no border alternate
         CellStyle regularAlternateStyle = workbook.createCellStyle();
@@ -145,13 +95,21 @@ public class ReportWriter {
         regularAlternateStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         regularAlternateStyle.setBorderBottom(BorderStyle.THIN);
         regularAlternateStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
-        //  regularStyle.setWrapText(true);
+        regularAlternateStyle.setFont(font);
 
         // Cell with bottom border
         CellStyle borderStyle = workbook.createCellStyle();
         borderStyle.setBorderBottom(BorderStyle.MEDIUM);
         borderStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
-        // borderStyle.setWrapText(true);
+        borderStyle.setFont(font);
+
+        // Cell with bottom and top borders
+        CellStyle columnsListStyle = workbook.createCellStyle();
+        columnsListStyle.setBorderTop(BorderStyle.MEDIUM);
+        columnsListStyle.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+        columnsListStyle.setBorderBottom(BorderStyle.MEDIUM);
+        columnsListStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+        columnsListStyle.setFont(font);
 
         // Cell with border alternate
         CellStyle borderAlternateStyle = workbook.createCellStyle();
@@ -159,28 +117,59 @@ public class ReportWriter {
         borderAlternateStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         borderAlternateStyle.setBorderBottom(BorderStyle.MEDIUM);
         borderAlternateStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+        borderAlternateStyle.setFont(font);
 
-        // Conflicting cell style no border
+        // Conflicting cell style with border
         CellStyle conflictBorderStyle = workbook.createCellStyle();
         conflictBorderStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_YELLOW.getIndex());
         conflictBorderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         conflictBorderStyle.setBorderBottom(BorderStyle.MEDIUM);
         conflictBorderStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
-        //conflictBorderStyle.setWrapText(true);
+        conflictBorderStyle.setFont(font);
 
-        // Conflicting cell style with border
+        // Conflicting cell style with no border
         CellStyle conflictPlainStyle = workbook.createCellStyle();
         conflictPlainStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_YELLOW.getIndex());
         conflictPlainStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         conflictPlainStyle.setBorderBottom(BorderStyle.THIN);
         conflictPlainStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
-        // conflictPlainStyle.setWrapText(true);
+        conflictPlainStyle.setFont(font);
 
         int rowCounter = 0;
 
         // for each run set using --key parameter
         for (int i = 0; i < diff.size(); i++) {
             List<CSVReportEntry> run = diff.get(i);
+
+            // create row to display which key columns were considered
+            StringBuilder sb = new StringBuilder("Key columns: ");
+            for (int j = 0; j < report.getKeyColumnsList().get(i).size(); j++) {
+                sb.append(report.getKeyColumnsList().get(i).get(j));
+                if (j != report.getKeyColumnsList().get(i).size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            Row keysRow = sheet.createRow(rowCounter++);
+            Cell keysCell = keysRow.createCell(0);
+            keysCell.setCellStyle(regularStyle);
+            keysCell.setCellValue(sb.toString());
+            sheet.addMergedRegion(new CellRangeAddress(rowCounter - 1, rowCounter - 1, 0, report.getAllColumns().size() - 1));
+
+
+            // create row to display which columns were compared
+            sb = new StringBuilder("Columns compared: ");
+            for (int j = 0; j < report.getColumnsToCompare().size(); j++) {
+                sb.append(report.getColumnsToCompare().get(j));
+                if (j != report.getColumnsToCompare().size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            Row columnsRow = sheet.createRow(rowCounter++);
+            Cell columnsCell = columnsRow.createCell(0);
+            columnsCell.setCellStyle(regularStyle);
+            columnsCell.setCellValue(sb.toString());
+            sheet.addMergedRegion(new CellRangeAddress(rowCounter - 1, rowCounter - 1, 0, report.getAllColumns().size() - 1));
+
 
             // render header
             Row header = sheet.createRow(rowCounter++);
@@ -202,19 +191,7 @@ public class ReportWriter {
                 idCell.setCellValue(String.valueOf(id));
                 idCell.setCellStyle(regularStyle);
 
-
-                if (id % 2 == 0) {
-                    isAlternateCell = true;
-                }
-
-                //System.out.println("ID: "+id+"\t Alternate: "+isAlternateCell);
-
-
-//                if(id % 2 == 0){
-//                    idCell.setCellStyle(regularAlternateStyle);
-//                }else{
-//                    idCell.setCellStyle(regularStyle);
-//                }
+                if (id % 2 == 0) isAlternateCell = true;
 
                 for (int y = 1; y < columns.size(); y++) {
 
@@ -228,22 +205,12 @@ public class ReportWriter {
                     cell.setCellStyle(regularStyle);
 
                     if (j == run.size() - 1) {
-//                        if(isAlternateCell){
-//                            cell.setCellStyle(borderAlternateStyle);
-//                            idCell.setCellStyle(borderAlternateStyle);
-//                        }else{
                         cell.setCellStyle(borderStyle);
                         idCell.setCellStyle(borderStyle);
-//                        }
                     } else if (j < run.size() - 1) {
                         if (run.get(j + 1).getId() != run.get(j).getId()) {
-//                            if(isAlternateCell){
-//                                cell.setCellStyle(borderAlternateStyle);
-//                                idCell.setCellStyle(borderAlternateStyle);
-//                            }else{
                             cell.setCellStyle(borderStyle);
                             idCell.setCellStyle(borderStyle);
-//                            }
                         }
                     }
 
@@ -264,7 +231,6 @@ public class ReportWriter {
                             idCell.setCellStyle(borderAlternateStyle);
                         }
 
-
                         if (cell.getCellStyle().equals(regularStyle)) {
                             cell.setCellStyle(regularAlternateStyle);
 
@@ -272,22 +238,48 @@ public class ReportWriter {
                             cell.setCellStyle(borderAlternateStyle);
                         }
                     }
-
                 }
                 isAlternateCell = false;
             }
             rowCounter++;
-
         }
 
-        File currDir = new File(".");
-        String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
-        System.out.println("Saved at: " + fileLocation);
+        setBordersToMergedCells(sheet);
+        saveWorkbookToFile(workbook, path);
+    }
+
+
+    private static void setBordersToMergedCells(Sheet sheet) {
+        List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
+        for (CellRangeAddress rangeAddress : mergedRegions) {
+            RegionUtil.setBorderTop(BorderStyle.MEDIUM, rangeAddress, sheet);
+            RegionUtil.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex(), rangeAddress, sheet);
+            RegionUtil.setBorderBottom(BorderStyle.MEDIUM, rangeAddress, sheet);
+            RegionUtil.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex(), rangeAddress, sheet);
+
+        }
+    }
+
+    private static void saveWorkbookToFile(Workbook workbook, String path) {
+        if (!path.endsWith(File.separator)) {
+            path = path.concat(File.separator);
+        }
+
+        path = path.concat(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).concat(".xlsx");
+        Path output = Paths.get(path);
+
+        try {
+            Files.createDirectories(output.getParent());
+            Files.createFile(output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Saved at: " + output.toString());
 
         try {
             FileOutputStream outputStream = null;
-            outputStream = new FileOutputStream(fileLocation);
+            outputStream = new FileOutputStream(output.toString());
             workbook.write(outputStream);
             workbook.close();
         } catch (FileNotFoundException e) {
@@ -295,12 +287,6 @@ public class ReportWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static CellStyle highlight(CellStyle style) {
-        style.setFillForegroundColor(HSSFColor.HSSFColorPredefined.YELLOW.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        return style;
-    }
 }

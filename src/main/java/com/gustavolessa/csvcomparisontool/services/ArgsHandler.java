@@ -68,10 +68,11 @@ public class ArgsHandler {
     }
 
     public List<String> getArgList(String arg, String errMessage) throws IllegalArgumentException {
-        return List.of(Optional.of(args.getOptionValues(arg).get(0))
+        List<String> strings = new ArrayList<>(List.of(Optional.of(args.getOptionValues(arg).get(0))
                 .orElseThrow(() ->
                         new IllegalArgumentException(errMessage))
-                .split(",", -1));
+                .split(",", -1)));
+        return strings;
     }
 
     public List<List<String>> getArgLists(String arg, String errMessage) throws IllegalArgumentException {
