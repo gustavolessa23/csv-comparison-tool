@@ -22,7 +22,7 @@ public class ArgsHandler {
     private List<String> datasetOptions;
     private List<String> columnsToCompare;
     private List<List<String>> keyColumns;
-    private List<String> outputFileType;
+    //    private List<String> outputFileType;
     private String dest;
     private String src;
 
@@ -31,34 +31,55 @@ public class ArgsHandler {
         this.args = null;
     }
 
+    /**
+     * Get running params and read them.
+     *
+     * @param args
+     * @throws IllegalArgumentException
+     */
     public void setArgs(ApplicationArguments args) throws IllegalArgumentException {
         this.args = args;
         readArgs();
     }
 
+    /**
+     * Read desired args, throwing exception if a needed one is not found.
+     *
+     * @throws IllegalArgumentException
+     */
     private void readArgs() throws IllegalArgumentException {
+        // output path
         dest = Optional.of(args.getOptionValues("dest").get(0))
                 .orElseGet(() -> System.getProperty("java.io.tmpdir"));
 
+        // source file path
         src = getArgSingle("src", "--src parameter is required.");
 
+        // column name that defines the systems to be compared
         systemColumnId = getArgSingle("system", "--system parameter is required to identify which column" +
                 "contains the information that will be used to split datasets.");
 
-        keyColumns = getArgLists("key", "--same parameter is required to define which column " +
-                "identifies the account number.");
-
-        outputFileType = Optional.of(args.getNonOptionArgs())
-                .orElse(List.of("csv"));
-
-        columnsToCompare = getArgList("compare", "--compare parameter is required to define " +
-                "which columns will be used to compare the rates applied.");
-
+        // value options to the above column
         datasetOptions = getArgList("options", "--options parameter is required to define " +
                 "the dataset present in the CSV.");
 
+        // there should be 2 options above. Throw exception if not.
         if (datasetOptions.size() != 2)
             throw new IllegalArgumentException("--options parameter should contain exactly two items. (E.g --options=\"A,B\"");
+
+        // sets of columns, which one defining key columns that will be used to determine
+        // if the entries are comparable
+        keyColumns = getArgLists("key", "--same parameter is required to define which column " +
+                "identifies the account number.");
+//
+//        // output file type
+//        outputFileType = Optional.of(args.getNonOptionArgs())
+//                .orElse(List.of("csv"));
+
+        // columns containing the values to be compared
+        columnsToCompare = getArgList("compare", "--compare parameter is required to define " +
+                "which columns will be used to compare the rates applied.");
+
     }
 
 
@@ -101,9 +122,9 @@ public class ArgsHandler {
         return keyColumns;
     }
 
-    public List<String> getOutputFileType() {
-        return outputFileType;
-    }
+//    public List<String> getOutputFileType() {
+//        return outputFileType;
+//    }
 
     public String getDest() {
         return dest;

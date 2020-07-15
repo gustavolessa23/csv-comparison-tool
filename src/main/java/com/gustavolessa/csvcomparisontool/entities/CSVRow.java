@@ -2,11 +2,11 @@ package com.gustavolessa.csvcomparisontool.entities;
 
 import java.util.*;
 
-public class CSVEntry {
+public class CSVRow {
 
     protected Map<String, String> data;
 
-    public CSVEntry() {
+    public CSVRow() {
         this.data = new HashMap<>();
     }
 
@@ -41,7 +41,7 @@ public class CSVEntry {
             return true;
 
         for (String s : this.getData().keySet()) {
-            if (!((CSVEntry) obj).getData().get(s).equalsIgnoreCase(this.getData().get(s)))
+            if (!((CSVRow) obj).getData().get(s).equalsIgnoreCase(this.getData().get(s)))
                 return false;
 
         }

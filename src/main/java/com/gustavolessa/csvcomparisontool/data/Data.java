@@ -1,8 +1,8 @@
 package com.gustavolessa.csvcomparisontool.data;
 
-import com.gustavolessa.csvcomparisontool.entities.CSVEntry;
+import com.gustavolessa.csvcomparisontool.entities.CSVRow;
 import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
-import com.gustavolessa.csvcomparisontool.services.ReportReader;
+import com.gustavolessa.csvcomparisontool.services.CSVFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
@@ -15,8 +15,8 @@ public class Data {
 
     // data from file
     private final List<String> columns;
-    private List<CSVEntry> dataset1;
-    private List<CSVEntry> dataset2;
+    private List<CSVRow> dataset1;
+    private List<CSVRow> dataset2;
 
     // parameters defined by run arguments
     int systemColumnIndex;
@@ -27,7 +27,7 @@ public class Data {
     private String outputDest;
 
     @Autowired
-    private ReportReader reportReader;
+    private CSVFileReader CSVFileReader;
     @Autowired
     private ArgsHandler argsHandler;
 
@@ -45,13 +45,13 @@ public class Data {
 
     public void readFile() throws FileNotFoundException {
         try {
-            reportReader.setSrc(argsHandler.getSrc());
-            reportReader.init();
-            reportReader.read();
+            CSVFileReader.setSrc(argsHandler.getSrc());
+            CSVFileReader.init();
+            CSVFileReader.read();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("CSV file not found.");
         } finally {
-            reportReader.close();
+            CSVFileReader.close();
         }
     }
 
@@ -88,8 +88,8 @@ public class Data {
         dataset2 = dataset2.stream().distinct().collect(Collectors.toList());
     }
 
-    private void addLineToDataset(List<CSVEntry> dataset, String[] line) {
-        CSVEntry entry = new CSVEntry();
+    private void addLineToDataset(List<CSVRow> dataset, String[] line) {
+        CSVRow entry = new CSVRow();
         for (int x = 0; x < line.length; x++) {
             entry.add(columns.get(x), line[x].trim());
 //            System.out.println("column = "+columns.get(x));
@@ -108,11 +108,11 @@ public class Data {
         setArguments();
     }
 
-    public List<CSVEntry> getDataset1() {
+    public List<CSVRow> getDataset1() {
         return dataset1;
     }
 
-    public List<CSVEntry> getDataset2() {
+    public List<CSVRow> getDataset2() {
         return dataset2;
     }
 
@@ -144,7 +144,7 @@ public class Data {
         System.out.println();
     }
 
-    public void printDataset(List<CSVEntry> dataset) {
+    public void printDataset(List<CSVRow> dataset) {
         for (int x = 0; x < dataset.size(); x++) {
             for (int y = 0; y < columns.size(); y++) {
                 System.out.print(dataset
@@ -157,7 +157,7 @@ public class Data {
         }
     }
 
-    public String datasetToString(List<CSVEntry> dataset) {
+    public String datasetToString(List<CSVRow> dataset) {
         StringBuilder sb = new StringBuilder();
         for (int x = 0; x < dataset.size(); x++) {
             for (int y = 0; y < columns.size(); y++) {

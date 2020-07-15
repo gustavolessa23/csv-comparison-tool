@@ -5,16 +5,16 @@ import java.util.List;
 
 public class Report {
 
-    private final List<List<CSVReportEntry>> diff;
+    private final List<List<CSVReportRow>> diff;
     private long lastCorrelationId;
     private final List<String> allColumns;
     private final List<List<String>> keyColumnsList;
     private final List<String> columnsToCompare;
-    private final List<CSVEntry> dataset1;
-    private final List<CSVEntry> dataset2;
+    private final List<CSVRow> dataset1;
+    private final List<CSVRow> dataset2;
 
-    private Report(List<CSVEntry> dataset1,
-                   List<CSVEntry> dataset2,
+    private Report(List<CSVRow> dataset1,
+                   List<CSVRow> dataset2,
                    List<List<String>> keyColumnsList,
                    List<String> columnsToCompare,
                    List<String> allColumns) {
@@ -36,16 +36,16 @@ public class Report {
          */
         for (int run = 0; run < keyColumnsList.size(); run++) {
 
-            //  List<CSVReportEntry> tempRun = new ArrayList<>();
-            List<CSVReportEntry> correlation = new ArrayList<>();
+            //  List<CSVReportRow> tempRun = new ArrayList<>();
+            List<CSVReportRow> correlation = new ArrayList<>();
 
             //For each entry in dataset1
-            for (CSVEntry rowFrom1 : dataset1) {
+            for (CSVRow rowFrom1 : dataset1) {
 
-                List<CSVReportEntry> foundItems = new ArrayList<>();
+                List<CSVReportRow> foundItems = new ArrayList<>();
 
                 // for each entry in dataset2
-                for (CSVEntry rowFrom2 : dataset2) {
+                for (CSVRow rowFrom2 : dataset2) {
 
                     if (entriesHaveTheSameKeys(rowFrom1, rowFrom2, keyColumnsList.get(run))) {
 
@@ -58,11 +58,11 @@ public class Report {
 
                                 if (foundItems.isEmpty()) {
                                     lastCorrelationId++;
-                                    foundItems.add(CSVReportEntry.reportFromEntry(rowFrom1));
+                                    foundItems.add(CSVReportRow.reportFromEntry(rowFrom1));
                                 }
 
                                 if (!isAdded) {
-                                    foundItems.add(CSVReportEntry.reportFromEntry(rowFrom2));
+                                    foundItems.add(CSVReportRow.reportFromEntry(rowFrom2));
                                     isAdded = true;
                                 }
 
@@ -100,13 +100,13 @@ public class Report {
 //        }
     }
 
-    private boolean isDifferent(CSVEntry set1, CSVEntry set2, String column) {
+    private boolean isDifferent(CSVRow set1, CSVRow set2, String column) {
         return !set1.getData().get(column)
                 .equalsIgnoreCase(set2.getData()
                         .get(column));
     }
 
-    private boolean entriesHaveTheSameKeys(CSVEntry set1, CSVEntry set2, List<String> keys) {
+    private boolean entriesHaveTheSameKeys(CSVRow set1, CSVRow set2, List<String> keys) {
 //        int run = ;
         boolean entriesHaveTheSameKeys = false;
 //                List<String> keyColumns = data.getSameColumns();
@@ -136,7 +136,7 @@ public class Report {
         List<List<List<String>>> content = new ArrayList<>();
 
         for (int i = 0; i < diff.size(); i++) {
-            List<CSVReportEntry> run = diff.get(i);
+            List<CSVReportRow> run = diff.get(i);
             List<List<String>> runContent = new ArrayList<>();
 
 
@@ -156,7 +156,7 @@ public class Report {
         }
     }
 
-    public List<List<CSVReportEntry>> getDiff() {
+    public List<List<CSVReportRow>> getDiff() {
         return diff;
     }
 
@@ -175,8 +175,8 @@ public class Report {
     public static final class ReportBuilder {
         private List<List<String>> keyColumnsList;
         private List<String> columnsToCompare;
-        private List<CSVEntry> dataset1;
-        private List<CSVEntry> dataset2;
+        private List<CSVRow> dataset1;
+        private List<CSVRow> dataset2;
         private List<String> allColumns;
 
         private ReportBuilder() {
@@ -201,12 +201,12 @@ public class Report {
             return this;
         }
 
-        public ReportBuilder withDataset1(List<CSVEntry> dataset1) {
+        public ReportBuilder withDataset1(List<CSVRow> dataset1) {
             this.dataset1 = dataset1;
             return this;
         }
 
-        public ReportBuilder withDataset2(List<CSVEntry> dataset2) {
+        public ReportBuilder withDataset2(List<CSVRow> dataset2) {
             this.dataset2 = dataset2;
             return this;
         }

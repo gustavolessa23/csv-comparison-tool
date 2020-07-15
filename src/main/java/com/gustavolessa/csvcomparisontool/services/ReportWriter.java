@@ -1,6 +1,6 @@
 package com.gustavolessa.csvcomparisontool.services;
 
-import com.gustavolessa.csvcomparisontool.entities.CSVReportEntry;
+import com.gustavolessa.csvcomparisontool.entities.CSVReportRow;
 import com.gustavolessa.csvcomparisontool.entities.Report;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -8,8 +8,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -26,29 +24,10 @@ import java.util.List;
 
 public class ReportWriter {
 
-//    public ReportWriter(){
-//
-//    }
-
-//    public static void writeReport(List<String[]> report, Path path) throws Exception {
-//
-//        try {
-//            Files.createDirectories(path.getParent());
-//            Files.createFile(path);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        CSVWriter writer = new CSVWriter(new FileWriter(path.toString()));
-//        writer.writeAll(report);
-//
-//        writer.close();
-//    }
-
     public static void writeToExcel(Report report, String path) {
 
         List<String> columns = report.getAllColumns();
-        List<List<CSVReportEntry>> diff = report.getDiff();
+        List<List<CSVReportRow>> diff = report.getDiff();
         Workbook workbook = new XSSFWorkbook();
 
         Sheet sheet = workbook.createSheet("Report");
@@ -63,16 +42,9 @@ public class ReportWriter {
         } catch (DecoderException e) {
             e.printStackTrace();
         }
-        XSSFColor color = new XSSFColor(rgbB, null);
 
-        XSSFCellStyle headerStyle = ((XSSFWorkbook) workbook).createCellStyle();
-        //  IndexedColorMap colorMap = ((XSSFWorkbook) workbook).getStylesSource().getIndexedColors();
-        //byte[] byteColor = new byte[]{(byte) 217, (byte) 245, (byte) 222};
-        //  headerStyle.setFillBackgroundColor(byteColor, new DefaultIndexedColorMap());
+        CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_CORNFLOWER_BLUE.getIndex());
-        // XSSFColor test = new XSSFColor(byteColor, new DefaultIndexedColorMap());
-
-        //headerStyle.setFillBackgroundColor(color);
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerStyle.setBorderBottom(BorderStyle.THIN);
         headerStyle.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
@@ -139,7 +111,7 @@ public class ReportWriter {
 
         // for each run set using --key parameter
         for (int i = 0; i < diff.size(); i++) {
-            List<CSVReportEntry> run = diff.get(i);
+            List<CSVReportRow> run = diff.get(i);
 
             // create row to display which key columns were considered
             StringBuilder sb = new StringBuilder("Key columns: ");
@@ -182,7 +154,7 @@ public class ReportWriter {
 
             //  render content
             for (int j = 0; j < run.size(); j++) {
-                CSVReportEntry entry = run.get(j);
+                CSVReportRow entry = run.get(j);
                 boolean isAlternateCell = false;
 
                 Row row = sheet.createRow(rowCounter++);
@@ -247,7 +219,6 @@ public class ReportWriter {
         setBordersToMergedCells(sheet);
         saveWorkbookToFile(workbook, path);
     }
-
 
     private static void setBordersToMergedCells(Sheet sheet) {
         List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();

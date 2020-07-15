@@ -18,52 +18,35 @@ public class AppRunner {
     @Autowired
     private Data data;
 
-//    @Autowired
-//    private Report report;
-
     @Autowired
     private ArgsHandler argsHandler;
 
-
     public void start(ApplicationArguments args) {
 
-        // get arguments and save to variables
         try {
+            // get arguments and save to variables
             argsHandler.setArgs(args);
+            // read data file
+            data.readFile();
+            // create new report using Builder
+            Report report = Report.ReportBuilder.aReport()
+                    .withColumnsToCompare(data.getColumnsToCompare())
+                    .withDataset1(data.getDataset1())
+                    .withDataset2(data.getDataset2())
+                    .withKeyColumnsList(data.getKeyColumns())
+                    .withAllColumns(data.getColumns())
+                    .build();
+            // write report to file
+            ReportWriter.writeToExcel(report, data.getOutputDest());
+            // print output file path
+            System.out.println("Dest: " + data.getOutputDest());
+
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage());
-        }
-
-        // read data file
-        try {
-            data.readFile();
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
         }
 
-        Report report = Report.ReportBuilder.aReport()
-                .withColumnsToCompare(data.getColumnsToCompare())
-                .withDataset1(data.getDataset1())
-                .withDataset2(data.getDataset2())
-                .withKeyColumnsList(data.getKeyColumns())
-                .withAllColumns(data.getColumns())
-                .build();
-
-        System.out.println("Dest: " + data.getOutputDest());
-        ReportWriter.writeToExcel(report, data.getOutputDest());
-
-//        // generate report
-//        report.generateReport(
-//                data.getDataset1(),
-//                data.getDataset2(),
-//                data.getKeyColumns(),
-//                data.getColumnsToCompare()
-//        );
-
-        // write report
-        //report.write(data.getColumns(), data.getOutputDest());
-//        report.writeExcel(data.getColumns(), data.getOutputDest());
-        // report.formatForExcel(data);
         // --src="C:\Users\Gustavo Lessa\OneDrive - Neueda\CSV Tool\sampledata.csv" --dest="C:\Users\Gustavo Lessa\OneDrive - Neueda\CSV Tool\output" --system="Platform" --options="FC,CV"  --key="AccountNumber" --key="AccountNumber,Dim1" --compare="Dim2,Dim3,Rate" csv
     }
 }

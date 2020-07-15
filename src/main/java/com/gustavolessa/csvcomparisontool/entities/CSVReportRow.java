@@ -2,20 +2,20 @@ package com.gustavolessa.csvcomparisontool.entities;
 
 import java.util.*;
 
-public class CSVReportEntry extends CSVEntry {
+public class CSVReportRow extends CSVRow {
 
     private final Set<String> conflicting;
 
     private long id;
 
-    public CSVReportEntry() {
+    public CSVReportRow() {
         super();
         this.conflicting = new HashSet<>();
         id = 0;
     }
 
-    public static CSVReportEntry reportFromEntry(CSVEntry entry) {
-        CSVReportEntry temp = new CSVReportEntry();
+    public static CSVReportRow reportFromEntry(CSVRow entry) {
+        CSVReportRow temp = new CSVReportRow();
         temp.setData(entry.getData());
         return temp;
     }

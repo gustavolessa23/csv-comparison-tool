@@ -37,7 +37,7 @@ public class CsvComparisonToolApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) {
         LOG.info("STARTING THE APPLICATION");
 
-        appRunner.start(args);
+        appRunner.start(args); // run app
 
         LOG.info("APPLICATION FINISHED");
     }

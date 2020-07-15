@@ -3,7 +3,7 @@ package com.gustavolessa.csvcomparisontool.config;
 import com.gustavolessa.csvcomparisontool.data.Data;
 import com.gustavolessa.csvcomparisontool.services.AppRunner;
 import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
-import com.gustavolessa.csvcomparisontool.services.ReportReader;
+import com.gustavolessa.csvcomparisontool.services.CSVFileReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,8 +32,8 @@ public class AppConfig {
     }
 
     @Bean
-    public ReportReader fileReader() {
-        return new ReportReader();
+    public CSVFileReader fileReader() {
+        return new CSVFileReader();
     }
 
 //    @Bean
@@ -42,7 +42,7 @@ public class AppConfig {
 //    }
 
 //    @Bean
-//    public ReportReader fileReader(){
-//        return new ReportReader();
+//    public CSVFileReader fileReader(){
+//        return new CSVFileReader();
 //    }
 }

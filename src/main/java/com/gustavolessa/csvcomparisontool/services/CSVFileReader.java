@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ReportReader {
+public class CSVFileReader {
 
     @Autowired
     private Data data;
@@ -21,7 +21,7 @@ public class ReportReader {
     private String[] record;
     private Path src;
 
-    public ReportReader() {
+    public CSVFileReader() {
 
     }
 
@@ -46,30 +46,13 @@ public class ReportReader {
         try {
             // read and add columns
             data.setColumns(csvReader.readNext());
-//
-//            data.getColumns().forEach(e -> System.out.print(e+"\t"));
-//            System.out.println();
 
             // read and add all lines, one at a time.
             while ((record = csvReader.readNext()) != null) {
-                //Arrays.stream(record).forEach(System.out::println);
                 data.addLine(record);
             }
             System.out.println();
-           // data.printDatasets();
-//            for(int x = 0; x < data.getDataset1().size(); x++){
-//                for(int y = 0; y < data.getColumns().size(); y++){
-//                    System.out.print(data
-//                            .getDataset1()
-//                            .get(x)
-//                            .getData()
-//                            .get(data
-//                                    .getColumns()
-//                                    .get(y))+"\t\t");
-//                }
-//                System.out.println();
-//            }
-            //  data.getDataset1().forEach(System.out::println);
+
 
         } catch (IOException e) {
             e.printStackTrace();
