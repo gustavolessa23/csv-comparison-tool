@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class ArgsHandler {
     }
 
     public List<String> getArgList(String arg, String errMessage) throws IllegalArgumentException {
-        List<String> strings = new ArrayList<>(List.of(Optional.of(args.getOptionValues(arg).get(0))
+        List<String> strings = new ArrayList<>(Arrays.asList(Optional.of(args.getOptionValues(arg).get(0))
                 .orElseThrow(() ->
                         new IllegalArgumentException(errMessage))
                 .split(",", -1)));
@@ -100,7 +101,7 @@ public class ArgsHandler {
                 .orElseThrow(() ->
                         new IllegalArgumentException(errMessage))
                 .stream()
-                .map(e -> new ArrayList<String>(List.of(e.split(",", -1))))
+                .map(e -> new ArrayList<String>(Arrays.asList(e.split(",", -1))))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
