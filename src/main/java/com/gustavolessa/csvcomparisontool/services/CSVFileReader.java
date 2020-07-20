@@ -31,18 +31,19 @@ public class CSVFileReader {
             throw new FileNotFoundException("CSV file not found at " + src.toString());
     }
 
-    public void init() {
-        try {
-            // create a reader
-            reader = Files.newBufferedReader(src);
-            // create csv reader
-            csvReader = new CSVReader(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void init() throws IOException {
+//        try {
+        // create a reader
+        reader = Files.newBufferedReader(src);
+        // create csv reader
+        csvReader = new CSVReader(reader);
+//        } catch (IOException e) {
+//            System.out.println("Problem reading file: "+src.toString());
+//            e.printStackTrace();
+//        }
     }
 
-    public void read() {
+    public void read() throws IOException, CsvValidationException {
         try {
             // read and add columns
             data.setColumns(csvReader.readNext());
@@ -51,25 +52,28 @@ public class CSVFileReader {
             while ((record = csvReader.readNext()) != null) {
                 data.addLine(record);
             }
-            System.out.println();
+            //System.out.println();
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
+            //e.printStackTrace();
         } catch (CsvValidationException e) {
-            e.printStackTrace();
+            throw e;
+            // e.printStackTrace();
         } finally {
             data.removeDuplicatesFromDatasets();
         }
     }
 
-    public void close() {
+    public void close() throws IOException {
         // close readers
         try {
             csvReader.close();
             reader.close();
         } catch (IOException ioException) {
-            ioException.printStackTrace();
+            System.out.println("Couldn't close the readers.");
+            throw ioException;
         }
 
     }

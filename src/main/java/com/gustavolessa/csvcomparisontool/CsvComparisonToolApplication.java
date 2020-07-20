@@ -1,45 +1,46 @@
 package com.gustavolessa.csvcomparisontool;
 
-import com.gustavolessa.csvcomparisontool.services.AppRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
-public class CsvComparisonToolApplication implements ApplicationRunner {
+public class CsvComparisonToolApplication {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CsvComparisonToolApplication.class);
 
-    //	@Autowired
-//	private ApplicationContext context;
-//
-//	@Autowired
-//	private Data data;
-//
-//	@Autowired
-//	private Report report;
-//
-//	@Autowired
-//	private ArgsHandler argsHandler;
-    @Autowired
-    private AppRunner appRunner;
+//    @Autowired
+//    private AppRunner appRunner;
+
 
 	public static void main(String... args) {
-		SpringApplication.run(CsvComparisonToolApplication.class, args);
+
+		new SpringApplicationBuilder(CsvComparisonToolApplication.class)
+				.headless(false)
+				.web(WebApplicationType.NONE)
+				.run(args);
+
+//        ConfigurableApplicationContext ctx  =new SpringApplicationBuilder(MainWindow.class).headless(false).run(args);
+//		//SpringApplication.run(CsvComparisonToolApplication.class, args);
+//        JFrame frame = new JFrame("CSV Comparison Tool");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
 	}
 
-	@Override
+	//	@Override
 	public void run(ApplicationArguments args) {
-        LOG.info("STARTING THE APPLICATION");
 
-        appRunner.start(args); // run app
+//        MainWindow appWindow = new MainWindow();
+		// appWindow.setWindow();
 
-        LOG.info("APPLICATION FINISHED");
-    }
+		//appRunner.start(args); // run app
+
+		LOG.info("APPLICATION FINISHED");
+	}
 
 }

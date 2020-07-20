@@ -15,14 +15,14 @@ public class AppConfig {
 //    public ArgsHandler argsValidator(ApplicationArguments args) {
 //        return new ArgsHandler(args);
 //    }
-
+//
     @Bean
     public AppRunner appRunner() {
         return new AppRunner();
     }
 
     @Bean
-    public ArgsHandler argsValidator() {
+    public ArgsHandler argsHandler() {
         return new ArgsHandler();
     }
 
@@ -30,6 +30,9 @@ public class AppConfig {
     public Data data() {
         return new Data();
     }
+
+//    @Bean
+//    public MainWindow mainWindow() { return new MainWindow(); }
 
     @Bean
     public CSVFileReader fileReader() {

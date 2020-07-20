@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 /**
  * Validates the arguments provided.
  */
-
 public class ArgsHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArgsHandler.class);
@@ -132,5 +131,29 @@ public class ArgsHandler {
 
     public String getSrc() {
         return src;
+    }
+
+    public void setSystemColumnId(String systemColumnId) {
+        this.systemColumnId = systemColumnId;
+    }
+
+    public void setDatasetOptions(List<String> datasetOptions) {
+        this.datasetOptions = datasetOptions;
+    }
+
+    public void setColumnsToCompare(List<String> columnsToCompare) {
+        this.columnsToCompare = columnsToCompare;
+    }
+
+    public void setKeyColumns(List<List<String>> keyColumns) {
+        this.keyColumns = keyColumns;
+    }
+
+    public void setDest(String dest) {
+        this.dest = dest;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
     }
 }

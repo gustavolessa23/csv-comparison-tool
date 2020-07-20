@@ -3,9 +3,12 @@ package com.gustavolessa.csvcomparisontool.data;
 import com.gustavolessa.csvcomparisontool.entities.CSVRow;
 import com.gustavolessa.csvcomparisontool.services.ArgsHandler;
 import com.gustavolessa.csvcomparisontool.services.CSVFileReader;
+import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,15 +46,26 @@ public class Data {
         this.outputDest = "";
     }
 
-    public void readFile() throws FileNotFoundException {
+    public void readFile() throws FileNotFoundException, AccessDeniedException {
         try {
             CSVFileReader.setSrc(argsHandler.getSrc());
             CSVFileReader.init();
             CSVFileReader.read();
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("CSV file not found.");
-        } finally {
             CSVFileReader.close();
+        } catch (AccessDeniedException e) {
+
+            System.out.println("Access denied for path: " + argsHandler.getSrc());
+            throw new AccessDeniedException("Access denied!");
+            //throw new FileNotFoundException("CSV file not found.");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+            throw new FileNotFoundException("CSV file not found.");
+        } catch (IOException e) {
+            System.out.println("Problem reading file: " + argsHandler.getSrc());
+            e.printStackTrace();
+        } catch (CsvValidationException e) {
+            System.out.println("CSV file not valid! Please check the formatting.");
+            e.printStackTrace();
         }
     }
 

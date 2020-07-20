@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ReportWriter {
 
-    public static void writeToExcel(Report report, String path) {
+    public static String writeToExcel(Report report, String path) {
 
         List<String> columns = report.getAllColumns();
         List<List<CSVReportRow>> diff = report.getDiff();
@@ -217,7 +217,7 @@ public class ReportWriter {
         }
 
         setBordersToMergedCells(sheet);
-        saveWorkbookToFile(workbook, path);
+        return saveWorkbookToFile(workbook, path);
     }
 
     private static void setBordersToMergedCells(Sheet sheet) {
@@ -231,7 +231,9 @@ public class ReportWriter {
         }
     }
 
-    private static void saveWorkbookToFile(Workbook workbook, String path) {
+    private static String saveWorkbookToFile(Workbook workbook, String path) {
+        boolean done = true;
+
         if (!path.endsWith(File.separator)) {
             path = path.concat(File.separator);
         }
@@ -244,6 +246,7 @@ public class ReportWriter {
             Files.createFile(output);
         } catch (Exception e) {
             e.printStackTrace();
+            done = false;
         }
 
         System.out.println("Saved at: " + output.toString());
@@ -254,10 +257,16 @@ public class ReportWriter {
             workbook.write(outputStream);
             workbook.close();
         } catch (FileNotFoundException e) {
+            done = false;
             e.printStackTrace();
         } catch (IOException e) {
+            done = false;
             e.printStackTrace();
         }
+        if (!done)
+            return "";
+        else
+            return output.toString();
     }
 
 }
