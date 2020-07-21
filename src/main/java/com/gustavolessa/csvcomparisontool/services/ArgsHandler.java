@@ -22,7 +22,6 @@ public class ArgsHandler {
     private List<String> datasetOptions;
     private List<String> columnsToCompare;
     private List<List<String>> keyColumns;
-    //    private List<String> outputFileType;
     private String dest;
     private String src;
 

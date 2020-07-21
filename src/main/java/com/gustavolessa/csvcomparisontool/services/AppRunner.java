@@ -66,6 +66,7 @@ public class AppRunner {
                     .withDataset2(data.getDataset2())
                     .withKeyColumnsList(data.getKeyColumns())
                     .withAllColumns(data.getColumns())
+                    .withSystemColumn(data.getSystemColumn())
                     .build();
             // write report to file
             outputFilePath = ReportWriter.writeToExcel(report, data.getOutputDest());

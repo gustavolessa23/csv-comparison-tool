@@ -12,14 +12,13 @@ import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Data {
 
     // data from file
     private final List<String> columns;
-    private List<CSVRow> dataset1;
-    private List<CSVRow> dataset2;
+    private final List<CSVRow> dataset1;
+    private final List<CSVRow> dataset2;
 
     // parameters defined by run arguments
     int systemColumnIndex;
@@ -28,6 +27,7 @@ public class Data {
     private List<List<String>> keyColumns;
     private List<String> columnsToCompare;
     private String outputDest;
+    private String systemColumn;
 
     @Autowired
     private CSVFileReader CSVFileReader;
@@ -44,10 +44,14 @@ public class Data {
         this.systemColumnIndex = -1;
         this.columnsToCompare = new ArrayList<>();
         this.outputDest = "";
+        this.systemColumn = "";
     }
 
     public void readFile() throws FileNotFoundException, AccessDeniedException {
         try {
+            columns.clear();
+            dataset1.clear();
+            dataset2.clear();
             CSVFileReader.setSrc(argsHandler.getSrc());
             CSVFileReader.init();
             CSVFileReader.read();
@@ -86,6 +90,8 @@ public class Data {
         columnsToCompare = argsHandler.getColumnsToCompare();
 
         outputDest = argsHandler.getDest();
+
+        systemColumn = argsHandler.getSystemColumnId();
     }
 
     public void addLine(String[] line) {
@@ -98,9 +104,10 @@ public class Data {
     }
 
     public void removeDuplicatesFromDatasets() {
-        dataset1 = dataset1.stream().distinct().collect(Collectors.toList());
-        dataset2 = dataset2.stream().distinct().collect(Collectors.toList());
+        //  dataset1 = dataset1.stream().distinct().collect(Collectors.toList());
+        // dataset2 = dataset2.stream().distinct().collect(Collectors.toList());
     }
+
 
     private void addLineToDataset(List<CSVRow> dataset, String[] line) {
         CSVRow entry = new CSVRow();
@@ -120,6 +127,10 @@ public class Data {
     public void setColumns(String[] columns) {
         Arrays.stream(columns).forEach(e -> addColumn(e.trim()));
         setArguments();
+    }
+
+    public String getSystemColumn() {
+        return systemColumn;
     }
 
     public List<CSVRow> getDataset1() {

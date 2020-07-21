@@ -32,15 +32,11 @@ public class CSVFileReader {
     }
 
     public void init() throws IOException {
-//        try {
         // create a reader
         reader = Files.newBufferedReader(src);
         // create csv reader
         csvReader = new CSVReader(reader);
-//        } catch (IOException e) {
-//            System.out.println("Problem reading file: "+src.toString());
-//            e.printStackTrace();
-//        }
+
     }
 
     public void read() throws IOException, CsvValidationException {
